@@ -8,5 +8,5 @@ This project uses the following assets or tools:
 * The [Universal LPC Spritesheet](https://github.com/makrohn/Universal-LPC-spritesheet), assembled by Matthew Krohn.
 * The [Universal LPC Spritesheet Character Generator](https://github.com/gaurav0/Universal-LPC-Spritesheet-Character-Generator), created by Gaurav Munjal.
 
-== License ==
+# License
 This project is licensed under the GPLv3. See LICENSE.txt for details.
