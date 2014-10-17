@@ -56,13 +56,13 @@ class MainScreen extends Screen {
             }
         }
       }
-
-      Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
-      batch.setProjectionMatrix(camera.combined)
-      batch.begin()
-      playerRenderer.render(player, batch)
-      batch.end()
     }
+    
+    Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    batch.setProjectionMatrix(camera.combined)
+    batch.begin()
+    playerRenderer.render(player, batch)
+    batch.end()
   }
 
   override def resize(width: Int, height: Int) {
