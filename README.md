@@ -3,6 +3,8 @@ This is a simple game programmed in Scala. LibGDX is used as a framework. I real
 
 To run the game, type `activator desktop/run` in a terminal.
 
+To package the game, type `activator desktop/universal:packageBin` in a terminal.
+
 # Credits
 This project uses the following assets or tools:
 * The [Universal LPC Spritesheet](https://github.com/makrohn/Universal-LPC-spritesheet), assembled by Matthew Krohn.
