@@ -1,4 +1,4 @@
-val projectName = """spritetest"""
+val projectName = """knightgame"""
 
 name := projectName
 
