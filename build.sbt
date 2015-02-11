@@ -8,7 +8,11 @@ name := projectName
 
 version := "1.0.0"
 
-scalaVersion := "2.11.5"
+scalaVersion in Global := "2.11.5"
+
+libraryDependencies in ThisBuild ++= Seq(
+  "com.badlogicgames.gdx" % "gdx" % LibgdxBuild.libgdxVersion
+)
 
 lazy val root = Project("root", file("."))
   .aggregate(android, desktop)
@@ -27,14 +31,18 @@ lazy val desktop = Project("desktop", file("desktop"))
     libraryDependencies ++= Seq(
       "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % LibgdxBuild.libgdxVersion,
       "com.badlogicgames.gdx" % "gdx-platform" % LibgdxBuild.libgdxVersion classifier "natives-desktop"
-    )
+    ),
+    unmanagedResourceDirectories in Compile += baseDirectory.value / ".." / "assets"
   )
   .settings(packageArchetype.java_application: _*)
   .dependsOn(core)
 
-libraryDependencies in ThisBuild ++= Seq(
-  "com.badlogicgames.gdx" % "gdx" % LibgdxBuild.libgdxVersion
-)
+mappings in (desktop, Universal) ++= {
+  val baseDir = baseDirectory.value
+  val a = (baseDir / "assets").*** pair relativeTo(baseDir)
+  println(a)
+  a map (t => (t._1, t._2.replaceFirst("assets", "bin")))
+}
 
 javacOptions in Global ++= Seq("-source", "1.7", "-target", "1.7")
 
