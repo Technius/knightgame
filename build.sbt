@@ -1,7 +1,3 @@
-import com.typesafe.sbt.SbtNativePackager._
-
-import NativePackagerKeys._
-
 val projectName = """knightgame"""
 
 name := projectName
@@ -34,8 +30,8 @@ lazy val desktop = Project("desktop", file("desktop"))
     ),
     unmanagedResourceDirectories in Compile += baseDirectory.value / ".." / "assets"
   )
-  .settings(packageArchetype.java_application: _*)
   .dependsOn(core)
+  .enablePlugins(JavaAppPackaging)
 
 mappings in (desktop, Universal) ++= {
   val baseDir = baseDirectory.value
