@@ -2,9 +2,9 @@ val projectName = """knightgame"""
 
 name := projectName
 
-version := "1.0"
+version := "1.0.0"
 
-scalaVersion := "2.11.2"
+scalaVersion := "2.11.5"
 
 lazy val root = Project("root", file("."))
   .aggregate(android, desktop)
