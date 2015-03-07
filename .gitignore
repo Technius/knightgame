@@ -7,3 +7,4 @@
 /core/target/
 /desktop/target/
 /android/target/
+*.swp
