@@ -4,41 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, SpriteBatch, TextureRegion}
 
-class Player {
-  private[this] var (_x, _y) = (50, 50)
-  private[this] var _direction = Direction.Right
-  private[this] var _lastDirection = _direction
-  private[this] var _action = Action.Standing
-  private[this] var _lastAction = _action
-
-  var stabTime = 0f
-  var walkTime = 0f
-
-  def update(deltaTime: Float) {
-    if (_action == Action.Stabbing) stabTime += deltaTime
-    else stabTime = 0f
-
-    if (_action == Action.Walking) walkTime += deltaTime
-    else walkTime = 0f
-  }
-
-  def x = _x
-  def x_=(x: Int) = _x = Math.min(Math.max(x, 5), 95)
-  def y = _y
-  def y_=(y: Int) = _y = Math.min(Math.max(y, 5), 95)
-  def direction = _direction
-  def direction_=(dir: Int) = {
-    _lastDirection = _direction
-    _direction = dir
-  }
-  def lastDirection = _lastDirection
-  def action = _action
-  def action_=(a: Action.Value) = {
-    _lastAction = action
-    _action = a
-  }
-  def lastAction = _lastAction
-}
+case class Player(
+    x: Int = 50,
+    y: Int = 50,
+    direction: Int = Direction.Right,
+    action: Action = Action.Standing,
+    stabTime: Float = 0f,
+    walkTime: Float = 0f)
 
 class PlayerRenderer {
   val knightTex = new Texture(Gdx.files.internal("knight.png"))
@@ -62,10 +34,11 @@ class PlayerRenderer {
   }
 }
 
-object Action extends Enumeration {
-  val Stabbing = Value
-  val Standing = Value
-  val Walking = Value
+sealed trait Action
+object Action {
+  case object Stabbing extends Action
+  case object Standing extends Action
+  case object Walking extends Action
 }
 
 object Direction {
