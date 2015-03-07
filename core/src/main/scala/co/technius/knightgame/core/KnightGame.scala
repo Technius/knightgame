@@ -36,47 +36,8 @@ class MainScreen extends Screen {
     updateTime += deltaTime
     if (updateTime >= 1f/60f) {
       updateTime = 0f
-
-      val actionState: Player = player.action match {
-        case Action.Stabbing =>
-          val t = player.stabTime + deltaTime
-          if (t >= 0.9f) {
-            player.copy(stabTime = 0f, action = Action.Standing)
-          } else {
-            player.copy(stabTime = t)
-          }
-        case Action.Walking =>
-          player.copy(walkTime = player.walkTime + deltaTime)
-        case _ =>
-          player.copy(walkTime = 0f)
-      }
-
-      val inputState = if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-        actionState.copy(action = Action.Stabbing)
-      } else {
-        val (deltaX, deltaY, direction) = moveKeys
-          .filter(kp => Gdx.input.isKeyPressed(kp._1))
-          .map { kp =>
-            val dir = kp._2
-            if (dir % 2 == 0) {
-              (0, 1 - dir, dir)
-            } else {
-              (dir - 2, 0, dir)
-            }
-          }
-          .foldLeft((0, 0, actionState.direction)) {
-            case ((x, y, _), (dx, dy, dir)) => (x + dx, y + dy, dir)
-          }
-        val standing = deltaX != 0 || deltaY != 0
-        actionState.copy(
-          x = math.min(math.max(actionState.x + deltaX, 5), 95),
-          y = math.min(math.max(actionState.y + deltaY, 5), 95),
-          direction = direction,
-          action = if (standing) Action.Walking else actionState.action
-        )
-      }
-
-      player = inputState
+      import Logic.logicToPlayer
+      player = Logic(player, deltaTime).actions.input(moveKeys)
     }
     
     Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
