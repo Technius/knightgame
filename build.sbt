@@ -21,7 +21,8 @@ lazy val android = Project("android", file("android"))
 
 lazy val desktop = Project("desktop", file("desktop"))
   .settings(
-    name := projectName + "-desktop"
+    name := projectName + "-desktop",
+    watchSources <++= sources in (core, Compile)
   )
   .dependsOn(core)
   .enablePlugins(LibGdxDesktop)
