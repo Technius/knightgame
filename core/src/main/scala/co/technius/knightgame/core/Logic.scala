@@ -23,7 +23,7 @@ case class Logic(player: Player, deltaTime: Float) {
   def input(moveKeys: List[(Int, Int)]): Logic = copy(player = {
     if (Gdx.input.isKeyPressed(Keys.SPACE)) {
       player.copy(action = Action.Stabbing)
-    } else {
+    } else if (player.action != Action.Stabbing) {
       val (deltaX, deltaY, direction) = moveKeys
         .filter { case (key, _) => Gdx.input.isKeyPressed(key) }
         .map { case (_, dir) =>
@@ -43,6 +43,8 @@ case class Logic(player: Player, deltaTime: Float) {
         direction = direction,
         action = if (standing) Action.Walking else Action.Standing
       )
+    } else {
+      player
     }
   })
 }
