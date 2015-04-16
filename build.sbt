@@ -4,7 +4,7 @@ name := projectName
 
 version := "1.0.0"
 
-scalaVersion in Global := "2.11.5"
+scalaVersion in Global := "2.11.6"
 
 lazy val root = Project("root", file("."))
   .aggregate(android, desktop)
