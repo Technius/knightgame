@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d._
 case class Player(
     x: Int = 50,
     y: Int = 50,
-    direction: Int = Direction.Right,
+    direction: Direction = Direction.Right,
     action: Action = Action.Standing)
 
 class PlayerRenderer {
@@ -24,11 +24,11 @@ class PlayerRenderer {
     import Action._
     val frame = player.action match {
       case Walking(time) =>
-        walkAnims(player.direction).getKeyFrame(time, true)
+        walkAnims(player.direction.id).getKeyFrame(time, true)
       case Stabbing(time) =>
-        stabAnims(player.direction).getKeyFrame(time, false)
+        stabAnims(player.direction.id).getKeyFrame(time, false)
       case Standing =>
-        standFrames(player.direction)
+        standFrames(player.direction.id)
     }
     knightSprite.setRegion(frame)
     knightSprite.setPosition(
@@ -46,9 +46,23 @@ object Action {
   case class Stabbing(time: Float) extends Action
 }
 
+sealed abstract class Direction(val id: Int, val speed: (Int, Int))
 object Direction {
-  val Up = 0
-  val Left = 1
-  val Down = 2
-  val Right = 3
+  val conflicts = Seq(Seq(Up, Down), Seq(Left, Right))
+  val compounds = Seq(
+    (Up,   Left ) -> UpLeft,
+    (Up,   Right) -> UpRight,
+    (Down, Left ) -> DownLeft,
+    (Down, Right) -> DownRight
+  )
+
+  case object Up    extends Direction(0, (0,  1))
+  case object Left  extends Direction(1, (-1, 0))
+  case object Down  extends Direction(2, (0, -1))
+  case object Right extends Direction(3, (1,  0))
+
+  case object UpRight   extends Direction(3, (1,   1))
+  case object UpLeft    extends Direction(1, (-1,  1))
+  case object DownRight extends Direction(3, (1,  -1))
+  case object DownLeft  extends Direction(1, (-1, -1))
 }
