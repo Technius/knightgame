@@ -20,11 +20,12 @@ class MainScreen extends Screen {
     Gdx.graphics.getWidth, Gdx.graphics.getHeight, camera)
   val batch = new SpriteBatch
   val playerRenderer = new PlayerRenderer
-  val moveKeys = List(
-    Keys.W -> Direction.Up,
-    Keys.S -> Direction.Down,
-    Keys.A -> Direction.Left,
-    Keys.D -> Direction.Right
+  val controls = List(
+    Keys.W -> Controls.Move(Direction.Up),
+    Keys.S -> Controls.Move(Direction.Down),
+    Keys.A -> Controls.Move(Direction.Left),
+    Keys.D -> Controls.Move(Direction.Right),
+    Keys.SPACE -> Controls.Stab
   )
 
   var player = Player()
@@ -37,7 +38,10 @@ class MainScreen extends Screen {
     updateTime += deltaTime
     if (updateTime >= 1f/60f) {
       updateTime = 0f
-      player = Logic(player, deltaTime).input(moveKeys).actions.player
+      val pressed = controls filter { t =>
+        Gdx.input.isKeyPressed(t._1)
+      } map (_._2)
+      player = Logic(player, deltaTime).input(pressed).actions.player
     }
     
     Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)

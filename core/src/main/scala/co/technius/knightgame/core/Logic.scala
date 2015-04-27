@@ -20,17 +20,17 @@ case class Logic(player: Player, deltaTime: Float) {
     case _ => player
   })
 
-  def input(moveKeys: List[(Int, Direction)]): Logic = copy(player = {
+  def input(pressedKeys: Seq[Control]): Logic = copy(player = {
     player.action match {
-      case s: Stabbing if Gdx.input.isKeyPressed(Keys.SPACE) =>
+      case s: Stabbing if pressedKeys contains Controls.Stab =>
         player copy (action = s)
-      case _ if Gdx.input.isKeyPressed(Keys.SPACE) =>
+      case _ if pressedKeys contains Controls.Stab =>
         player copy (action = Stabbing(0f))
       case _: Stabbing => player
       case _ =>
-        val directions = moveKeys
-          .filter { case (key, _) => Gdx.input.isKeyPressed(key) }
-          .map(_._2)
+        val directions = pressedKeys collect {
+          case m: Controls.Move => m.direction
+        }
   
         val directionOpt = directions match {
           case Seq(dir) => Some(dir)
