@@ -37,8 +37,7 @@ class MainScreen extends Screen {
     updateTime += deltaTime
     if (updateTime >= 1f/60f) {
       updateTime = 0f
-      import Logic.logicToPlayer
-      player = Logic(player, deltaTime).actions.input(moveKeys)
+      player = Logic(player, deltaTime).input(moveKeys).actions.player
     }
     
     Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
