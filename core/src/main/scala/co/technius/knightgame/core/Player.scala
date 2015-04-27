@@ -31,10 +31,8 @@ class PlayerRenderer {
         standFrames(player.direction.id)
     }
     knightSprite.setRegion(frame)
-    knightSprite.setPosition(
-      player.x * Gdx.graphics.getWidth  / 100 - knightSprite.getWidth  / 2,
-      player.y * Gdx.graphics.getHeight / 100 - knightSprite.getHeight / 2
-    )
+    knightSprite.setSize(10f, 10f)
+    knightSprite.setPosition(player.x - 5f, player.y - 5f)
     knightSprite.draw(batch)
   }
 }

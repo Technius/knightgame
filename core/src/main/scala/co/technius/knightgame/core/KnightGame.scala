@@ -27,6 +27,8 @@ class MainScreen extends Screen {
     Keys.D -> Controls.Move(Direction.Right),
     Keys.SPACE -> Controls.Stab
   )
+  
+  camera.setToOrtho(false, 100, 100)
 
   var player = Player()
   var updateTime = 0f
@@ -52,9 +54,6 @@ class MainScreen extends Screen {
   }
 
   override def resize(width: Int, height: Int): Unit = {
-    val ratio = width/height
-    camera.setToOrtho(false, width, height)
-    playerRenderer.knightSprite.setSize(width/10, height/10)
     camera.update()
   }
 
