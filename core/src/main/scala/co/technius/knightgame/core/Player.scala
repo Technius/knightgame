@@ -2,15 +2,13 @@ package co.technius.knightgame.core
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, SpriteBatch, TextureRegion}
+import com.badlogic.gdx.graphics.g2d._
 
 case class Player(
     x: Int = 50,
     y: Int = 50,
     direction: Int = Direction.Right,
-    action: Action = Action.Standing,
-    stabTime: Float = 0f,
-    walkTime: Float = 0f)
+    action: Action = Action.Standing)
 
 class PlayerRenderer {
   val knightTex = new Texture(Gdx.files.internal("knight.png"))
@@ -23,22 +21,29 @@ class PlayerRenderer {
   val knightSprite = new Sprite()
 
   def render(player: Player, batch: SpriteBatch) {
+    import Action._
     val frame = player.action match {
-      case Action.Walking => walkAnims(player.direction).getKeyFrame(player.walkTime, true)
-      case Action.Stabbing => stabAnims(player.direction).getKeyFrame(player.stabTime, false)
-      case Action.Standing => standFrames(player.direction)
+      case Walking(time) =>
+        walkAnims(player.direction).getKeyFrame(time, true)
+      case Stabbing(time) =>
+        stabAnims(player.direction).getKeyFrame(time, false)
+      case Standing =>
+        standFrames(player.direction)
     }
     knightSprite.setRegion(frame)
-    knightSprite.setPosition(player.x*Gdx.graphics.getWidth/100 - knightSprite.getWidth/2, player.y*Gdx.graphics.getHeight/100 - knightSprite.getHeight/2)
+    knightSprite.setPosition(
+      player.x * Gdx.graphics.getWidth  / 100 - knightSprite.getWidth  / 2,
+      player.y * Gdx.graphics.getHeight / 100 - knightSprite.getHeight / 2
+    )
     knightSprite.draw(batch)
   }
 }
 
 sealed trait Action
 object Action {
-  case object Stabbing extends Action
   case object Standing extends Action
-  case object Walking extends Action
+  case class Walking(time: Float) extends Action
+  case class Stabbing(time: Float) extends Action
 }
 
 object Direction {

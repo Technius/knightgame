@@ -3,27 +3,33 @@ package co.technius.knightgame.core
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 
+import Action._
+
 case class Logic(player: Player, deltaTime: Float) {
   def actions: Logic = copy(player = {
     player.action match {
-      case Action.Stabbing =>
-        val t = player.stabTime + deltaTime
+      case Stabbing(stabTime) =>
+        val t = stabTime + deltaTime
         if (t >= 0.9f) {
-          player.copy(stabTime = 0f, action = Action.Standing)
+          player.copy(action = Standing)
         } else {
-          player.copy(stabTime = t)
+          player.copy(action = Stabbing(t))
         }
-      case Action.Walking =>
-        player.copy(walkTime = player.walkTime + deltaTime)
+      case Walking(walkTime) =>
+        player.copy(action = Walking(walkTime + deltaTime))
       case _ =>
-        player.copy(walkTime = 0f)
+        player.copy(action = Walking(0f))
     }
   })
 
   def input(moveKeys: List[(Int, Int)]): Logic = copy(player = {
     if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-      player.copy(action = Action.Stabbing)
-    } else if (player.action != Action.Stabbing) {
+      val time = player.action match {
+        case Stabbing(t) => t
+        case _ => 0f
+      }
+      player.copy(action = Stabbing(time))
+    } else if (!player.action.isInstanceOf[Stabbing]) {
       val (deltaX, deltaY, direction) = moveKeys
         .filter { case (key, _) => Gdx.input.isKeyPressed(key) }
         .map { case (_, dir) =>
@@ -37,11 +43,16 @@ case class Logic(player: Player, deltaTime: Float) {
           case ((x, y, _), (dx, dy, dir)) => (x + dx, y + dy, dir)
         }
       val standing = deltaX != 0 || deltaY != 0
+      val time = player.action match {
+        case Walking(t) => t
+        case _ => 0f
+      }
+
       player.copy(
         x = math.min(math.max(player.x + deltaX, 5), 95),
         y = math.min(math.max(player.y + deltaY, 5), 95),
         direction = direction,
-        action = if (standing) Action.Walking else Action.Standing
+        action = if (standing) Walking(time) else Standing
       )
     } else {
       player

@@ -16,7 +16,8 @@ class KnightGame extends Game {
 
 class MainScreen extends Screen {
   val camera = new OrthographicCamera
-  val viewport = new FitViewport(Gdx.graphics.getWidth, Gdx.graphics.getHeight, camera)
+  val viewport = new FitViewport(
+    Gdx.graphics.getWidth, Gdx.graphics.getHeight, camera)
   val batch = new SpriteBatch
   val playerRenderer = new PlayerRenderer
   val moveKeys = List(
@@ -32,7 +33,7 @@ class MainScreen extends Screen {
 
   resize(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
-  override def render(deltaTime: Float) {
+  override def render(deltaTime: Float): Unit = {
     updateTime += deltaTime
     if (updateTime >= 1f/60f) {
       updateTime = 0f
@@ -47,14 +48,14 @@ class MainScreen extends Screen {
     batch.end()
   }
 
-  override def resize(width: Int, height: Int) {
+  override def resize(width: Int, height: Int): Unit = {
     val ratio = width/height
     camera.setToOrtho(false, width, height)
     playerRenderer.knightSprite.setSize(width/10, height/10)
     camera.update()
   }
 
-  override def dispose() {
+  override def dispose(): Unit = {
     batch.dispose()
   }
 
