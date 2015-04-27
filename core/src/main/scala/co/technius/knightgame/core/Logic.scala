@@ -21,42 +21,40 @@ case class Logic(player: Player, deltaTime: Float) {
   })
 
   def input(moveKeys: List[(Int, Direction)]): Logic = copy(player = {
-    if (Gdx.input.isKeyPressed(Keys.SPACE)) {
-      val time = player.action match {
-        case Stabbing(t) => t
-        case _ => 0f
-      }
-      player.copy(action = Stabbing(time))
-    } else if (!player.action.isInstanceOf[Stabbing]) {
-      val directions = moveKeys
-        .filter { case (key, _) => Gdx.input.isKeyPressed(key) }
-        .map(_._2)
-
-      val directionOpt = directions match {
-        case Seq(dir) => Some(dir)
-        case dirs =>
-          val pairs = dirs
-            .combinations(2)
-            .filterNot(Direction.conflicts.contains(_))
-            .flatten
-            .toSeq
-
-          Direction.compounds find { case ((a, b), dir) =>
-            pairs.contains(a) && pairs.contains(b)
-          } map (_._2)
-      }
-
-      val walkTime = player.action match {
-        case Walking(t) => t
-        case _ => 0f
-      }
-
-      player.copy(
-        direction = directionOpt getOrElse player.direction,
-        action = directionOpt map (_ => Walking(walkTime)) getOrElse Standing
-      )
-    } else {
-      player
+    player.action match {
+      case s: Stabbing if Gdx.input.isKeyPressed(Keys.SPACE) =>
+        player copy (action = s)
+      case _ if Gdx.input.isKeyPressed(Keys.SPACE) =>
+        player copy (action = Stabbing(0f))
+      case _: Stabbing => player
+      case _ =>
+        val directions = moveKeys
+          .filter { case (key, _) => Gdx.input.isKeyPressed(key) }
+          .map(_._2)
+  
+        val directionOpt = directions match {
+          case Seq(dir) => Some(dir)
+          case dirs =>
+            val pairs = dirs
+              .combinations(2)
+              .filterNot(Direction.conflicts.contains(_))
+              .flatten
+              .toSeq
+  
+            Direction.compounds find { case ((a, b), dir) =>
+              pairs.contains(a) && pairs.contains(b)
+            } map (_._2)
+        }
+  
+        val walkTime = player.action match {
+          case Walking(t) => t
+          case _ => 0f
+        }
+  
+        player.copy(
+          direction = directionOpt getOrElse player.direction,
+          action = directionOpt map (_ => Walking(walkTime)) getOrElse Standing
+        )
     }
   })
 }
