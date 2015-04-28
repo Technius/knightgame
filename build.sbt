@@ -29,4 +29,11 @@ lazy val desktop = Project("desktop", file("desktop"))
 
 javacOptions in Global ++= Seq("-source", "1.7", "-target", "1.7")
 
-scalacOptions in Global += "-target:jvm-1.7"
+scalacOptions in Global ++= Seq(
+  "-target:jvm-1.7",
+  "-unchecked",
+  "-feature",
+  "-deprecation",
+  "-Xlint",
+  "-Xfatal-warnings"
+)
