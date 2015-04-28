@@ -5,19 +5,22 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d._
 
 case class Player(
-    x: Int = 50,
-    y: Int = 50,
+    x: Float = 50,
+    y: Float = 50,
     direction: Direction = Direction.Right,
     action: Action = Action.Standing)
 
 class PlayerRenderer {
+
   val knightTex = new Texture(Gdx.files.internal("knight.png"))
   val (knightRow, knightCol) = (21, 13)
-  val knightSheet = TextureRegion.split(knightTex, knightTex.getWidth/knightCol, knightTex.getHeight/knightRow)
+  val knightSheet = TextureRegion.split(knightTex,
+    knightTex.getWidth / knightCol, knightTex.getHeight / knightRow)
   val walkFrames = knightSheet.slice(8, 12)
   val standFrames = walkFrames.map(_(0))
   val walkAnims = walkFrames.map(_.slice(1, 9)).map(new Animation(0.125f, _:_*))
-  val stabAnims = knightSheet.slice(4, 8).map(l => new Animation(0.1f, l.slice(1, 8):_*))
+  val stabAnims = knightSheet.slice(4, 8).map(
+    l => new Animation(0.1f, l.slice(1, 8):_*))
   val knightSprite = new Sprite()
 
   def render(player: Player, batch: SpriteBatch) {
@@ -44,7 +47,7 @@ object Action {
   case class Stabbing(time: Float) extends Action
 }
 
-sealed abstract class Direction(val id: Int, val speed: (Int, Int))
+sealed abstract class Direction(val id: Int, val speed: (Float, Float))
 object Direction {
   val conflicts = Seq(Seq(Up, Down), Seq(Left, Right))
   val compounds = Seq(
@@ -54,13 +57,15 @@ object Direction {
     (Down, Right) -> DownRight
   )
 
-  case object Up    extends Direction(0, (0,  1))
-  case object Left  extends Direction(1, (-1, 0))
-  case object Down  extends Direction(2, (0, -1))
-  case object Right extends Direction(3, (1,  0))
+  lazy val diagDist = math.sqrt(2).toFloat/2f
 
-  case object UpRight   extends Direction(3, (1,   1))
-  case object UpLeft    extends Direction(1, (-1,  1))
-  case object DownRight extends Direction(3, (1,  -1))
-  case object DownLeft  extends Direction(1, (-1, -1))
+  case object Up    extends Direction(0, (0f,  1f))
+  case object Left  extends Direction(1, (-1f, 0f))
+  case object Down  extends Direction(2, (0f, -1f))
+  case object Right extends Direction(3, (1f,  0f))
+
+  case object UpRight   extends Direction(3, (diagDist,   diagDist))
+  case object UpLeft    extends Direction(1, (-diagDist,  diagDist))
+  case object DownRight extends Direction(3, (diagDist,  -diagDist))
+  case object DownLeft  extends Direction(1, (-diagDist, -diagDist))
 }
