@@ -37,6 +37,12 @@ class MainScreen extends Screen {
   resize(Gdx.graphics.getWidth, Gdx.graphics.getHeight)
 
   override def render(deltaTime: Float): Unit = {
+    Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    batch.setProjectionMatrix(camera.combined)
+    batch.begin()
+    playerRenderer.render(player, batch)
+    batch.end()
+
     updateTime += deltaTime
     if (updateTime >= 1f/60f) {
       updateTime = 0f
@@ -45,12 +51,6 @@ class MainScreen extends Screen {
       } map (_._2)
       player = Logic(player, deltaTime).input(pressed).actions.player
     }
-    
-    Gdx.graphics.getGL20.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    batch.setProjectionMatrix(camera.combined)
-    batch.begin()
-    playerRenderer.render(player, batch)
-    batch.end()
   }
 
   override def resize(width: Int, height: Int): Unit = {
