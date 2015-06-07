@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.{ GL20, OrthographicCamera, Texture }
 import com.badlogic.gdx.graphics.g2d.{ BitmapFont, SpriteBatch }
 import com.badlogic.gdx.utils.viewport.FitViewport
 
-import scala.math
-
 class KnightGame extends Game {
   override def create() = {
     setScreen(new MainScreen) 
@@ -46,9 +44,9 @@ class MainScreen extends Screen {
     updateTime += deltaTime
     while (updateTime >= 1f / 60f) {
       updateTime -= 1f / 60f
-      val pressed = controls filter { t =>
-        Gdx.input.isKeyPressed(t._1)
-      } map (_._2)
+      val pressed = controls collect {
+        case (key, control) if Gdx.input.isKeyPressed(key) => control
+      }
       player = Logic(player, 1f / 60f).input(pressed).actions.player
     }
   }

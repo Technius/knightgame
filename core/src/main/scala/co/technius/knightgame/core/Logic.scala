@@ -1,8 +1,5 @@
 package co.technius.knightgame.core
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.Keys
-
 import Action._
 
 case class Logic(player: Player, deltaTime: Float) {
@@ -12,7 +9,7 @@ case class Logic(player: Player, deltaTime: Float) {
       val t = stabTime + deltaTime
       player copy (action = if (t >= 0.9f) Standing else Stabbing(t))
     case Walking(walkTime) =>
-      val (dx, dy) = (player.direction.speed._1, player.direction.speed._2)
+      val (dx, dy) = player.direction.speed
       player copy (
         x = math.max(5f, math.min(95f, player.x + dx)),
         y = math.max(5f, math.min(95f, player.y + dy)),
@@ -42,9 +39,9 @@ case class Logic(player: Player, deltaTime: Float) {
               .flatten
               .toSeq
   
-            Direction.compounds find { case ((a, b), dir) =>
-              pairs.contains(a) && pairs.contains(b)
-            } map (_._2)
+            Direction.compounds collectFirst {
+              case ((a, b), d) if pairs.contains(a) && pairs.contains(b) => d
+            }
         }
   
         val walkTime = player.action match {
