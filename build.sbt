@@ -15,9 +15,9 @@ lazy val core = Project("core", file("core"))
     libraryDependencies += libGdx
   )
 
-lazy val android = Project("android", file("android"))
-  .settings(name := projectName + "-android")
-  .dependsOn(core)
+// lazy val android = Project("android", file("android"))
+//   .settings(name := projectName + "-android")
+//   .dependsOn(core)
 
 lazy val desktop = Project("desktop", file("desktop"))
   .settings(
